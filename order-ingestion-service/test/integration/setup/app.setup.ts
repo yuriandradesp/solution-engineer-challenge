@@ -5,6 +5,11 @@ import { AppModule } from '../../../src/app.module';
 import { configureApp } from '../../../src/config/app.setup';
 
 export async function buildApp(): Promise<INestApplication<App>> {
+  // Black-box tests: ephemeral store, no live pollers hitting :4000.
+  process.env.DB_PATH = ':memory:';
+  process.env.POLLING_ENABLED = 'false';
+  delete process.env.WEBHOOK_SECRET;
+
   const moduleFixture = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
